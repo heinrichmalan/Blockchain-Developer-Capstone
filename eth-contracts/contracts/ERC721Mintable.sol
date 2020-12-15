@@ -9,15 +9,31 @@ import "./Oraclize.sol";
 contract Ownable {
     //  TODO's
     //  1) create a private '_owner' variable of type address with a public getter function
-    //  2) create an internal constructor that sets the _owner var to the creater of the contract 
+    address private _owner;
+
+    function getOwner public returns (address) {
+        return _owner;
+    }
+
+    //  2) create an internal constructor that sets the _owner var to the creater of the contract
+    function constructor(address owner) {
+        _owner = owner;
+    }
+
     //  3) create an 'onlyOwner' modifier that throws if called by any account other than the owner.
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Actor has to be the owner of the contract");
+        _;
+    }
     //  4) fill out the transferOwnership function
     //  5) create an event that emits anytime ownerShip is transfered (including in the constructor)
+    event OwnershipTransferred(address newOwner);
 
     function transferOwnership(address newOwner) public onlyOwner {
         // TODO add functionality to transfer control of the contract to a newOwner.
         // make sure the new owner is a real address
-
+        _owner = newOwner;
+        emit OwnershipTransferred(newOwner);
     }
 }
 
@@ -27,6 +43,36 @@ contract Ownable {
 //  3) create an internal constructor that sets the _paused variable to false
 //  4) create 'whenNotPaused' & 'paused' modifier that throws in the appropriate situation
 //  5) create a Paused & Unpaused event that emits the address that triggered the event
+contract Pausable is Ownable {
+    bool private _paused;
+
+    constructor() internal {
+        _paused = false;
+    }
+
+    modifier whenNotPaused {
+        require(!_paused, "Contract cannot be paused");
+        _;
+    }
+
+    modifier paused {
+        require(paused, "Contract must be paused to perform this action");
+        _;
+    }
+
+    event Paused(address triggerer);
+
+    event Unpaused(address triggerer);
+
+    function setPaused(paused) public onlyOwner {
+        _paused = paused;
+        if (paused) {
+            emit Paused(msg.sender);
+        } else {
+            emit Unpaused(msg.sender);
+        }
+    }
+}
 
 contract ERC165 {
     bytes4 private constant _INTERFACE_ID_ERC165 = 0x01ffc9a7;
@@ -105,27 +151,31 @@ contract ERC721 is Pausable, ERC165 {
     function balanceOf(address owner) public view returns (uint256) {
         // TODO return the token balance of given address
         // TIP: remember the functions to use for Counters. you can refresh yourself with the link above
+        return _ownedTokensCount[owner].current();
     }
 
     function ownerOf(uint256 tokenId) public view returns (address) {
         // TODO return the owner of the given tokenId
+        return _tokenOwner[tokenId];
     }
 
 //    @dev Approves another address to transfer the given token ID
     function approve(address to, uint256 tokenId) public {
         
         // TODO require the given address to not be the owner of the tokenId
-
+        require(to != _tokenOwner[tokenId], "Token owner cannot approve transfer to self");
         // TODO require the msg sender to be the owner of the contract or isApprovedForAll() to be true
-
+        address memory owner = _tokenOwner[tokenId];
+        require(msg.sender == _owner || isApprovedForAll(owner, msg.sender));
         // TODO add 'to' address to token approvals
-
+        _tokenApprovals[tokenId] = to;
         // TODO emit Approval Event
-
+        emit Approval(owner, to, tokenId);
     }
 
     function getApproved(uint256 tokenId) public view returns (address) {
         // TODO return token approval if it exists
+        return _tokenApprovals[tokenId];
     }
 
     /**
@@ -416,6 +466,7 @@ contract ERC721Enumerable is ERC165, ERC721 {
 contract ERC721Metadata is ERC721Enumerable, usingOraclize {
     
     // TODO: Create private vars for token _name, _symbol, and _baseTokenURI (string)
+
 
     // TODO: create private mapping of tokenId's to token uri's called '_tokenURIs'
 
