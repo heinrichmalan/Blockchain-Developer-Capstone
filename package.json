@@ -7,6 +7,7 @@
     "dev": "lite-server",
     "test": "cd eth-contracts && truffle test",
     "compile": "cd eth-contracts && truffle compile",
+    "ganache": "node node_modules/ganache-cli/cli.js",
     "migrate-dev": "cd eth-contracts && truffle migrate --reset",
     "migrate-rinkeby": "cd eth-contracts && truffle --network rinkeby migrate --reset",
     "zokrates": "docker run -v $(pwd)/zokrates/code/square:/home/zokrates/code -ti zokrates/zokrates:0.5.1 /bin/bash"
@@ -15,7 +16,8 @@
   "author": "pk <pkrasam@gmail.com> (https://ipfs.infura.io/ipfs/QmSXiR9Khm3yo1J67nUopvVBxFJ8YGN2fUGZ34Etr3m92x/)",
   "license": "MIT",
   "devDependencies": {
-    "lite-server": "2.4.0"
+    "lite-server": "2.4.0",
+    "ganache-cli": "^6.12.1"
   },
   "dependencies": {
     "openzeppelin-solidity": "^2.2.0",
