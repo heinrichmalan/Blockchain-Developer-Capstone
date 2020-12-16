@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "lite-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd eth-contracts && truffle test",
+    "compile": "cd eth-contracts && truffle compile",
+    "migrate-dev": "cd eth-contracts && truffle migrate --reset",
+    "migrate-rinkeby": "cd eth-contracts && truffle --network rinkeby migrate --reset",
+    "zokrates": "docker run -v $(pwd)/zokrates/code/square:/home/zokrates/code -ti zokrates/zokrates:0.5.1 /bin/bash"
   },
   "keywords": [],
   "author": "pk <pkrasam@gmail.com> (https://ipfs.infura.io/ipfs/QmSXiR9Khm3yo1J67nUopvVBxFJ8YGN2fUGZ34Etr3m92x/)",
@@ -16,6 +20,8 @@
   "dependencies": {
     "openzeppelin-solidity": "^2.2.0",
     "solc": "^0.5.2",
-    "solc-js": "^0.5.2"
+    "solc-js": "^0.5.2",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^1.3.0"
   }
 }
