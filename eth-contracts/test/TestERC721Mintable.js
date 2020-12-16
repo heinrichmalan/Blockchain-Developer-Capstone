@@ -13,6 +13,14 @@ contract("TestERC721Mintable", (accounts) => {
             await this.contract.mint(accounts[2], 2, "token2");
         });
 
+        it("should return the correct owners for the tokens", async function () {
+            let token1Owner = await this.contract.ownerOf(1);
+            assert.equal(token1Owner, account_two);
+
+            let token2Owner = await this.contract.ownerOf(2);
+            assert.equal(token2Owner, accounts[2]);
+        });
+
         it("should return total supply", async function () {
             let res = await this.contract.totalSupply();
 
