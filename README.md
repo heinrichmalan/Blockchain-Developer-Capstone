@@ -14,7 +14,9 @@ From the project root:
 ## Running Tests
 
 From the root folder:
+`yarn ganache`
 
+In a new terminal window:
 `yarn test`
 
 # Contract Addresses
